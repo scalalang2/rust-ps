@@ -35,18 +35,18 @@ pub fn main() {
     macro_rules! println { ($($tt:tt)*) => { writeln!(stdout, $($tt)*).unwrap() }; }
 
     // from here to end
-    input!(words, n = u64, k = u64);
-
-    let mut num = 0;
-    for i in 1..n+1 {
-        if n % i == 0 {
-            num += 1;
-            if num == k {
-                println!("{}", i);
-                return;
+    input!(words, t = u64);
+    for _ in 0..t {
+        input!(words, n = i64);
+        if n % 7 == 0 {
+            println!("{}", n);
+        } else {
+            for i in 0..10 {
+                if (n - (n % 10) + i) % 7 == 0 {
+                    println!("{}", n - (n % 10) + i);
+                    break;
+                }
             }
         }
     }
-
-    println!("0")
 }
