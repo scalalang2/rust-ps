@@ -37,16 +37,19 @@ pub fn main() {
     // from here to end
     input!(words, t = u64);
     for _ in 0..t {
-        input!(words, n = i64);
-        if n % 7 == 0 {
-            println!("{}", n);
-        } else {
-            for i in 0..10 {
-                if (n - (n % 10) + i) % 7 == 0 {
-                    println!("{}", n - (n % 10) + i);
-                    break;
-                }
+        input!(words, a = String);
+        let mut ch = a.chars();
+        let mut len = a.len();
+        let mut zeros:usize = 0;
+        let mut ones:usize = 0;
+
+        while let Some(b) = ch.next() {
+            if b == '0' {
+                zeros += 1;
+            } else {
+                ones += 1;
             }
         }
+        println!("{}", min(min(ones, zeros), (len - 1) / 2))
     }
 }
