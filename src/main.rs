@@ -6,6 +6,11 @@ use std::io::{prelude::*, stdin, stdout, BufWriter};
 use std::os::raw::c_char;
 use std::cmp::min;
 
+/**
+ * hm/dc <= hc/dm 이면 끗
+ * 10억 번 정도의 연산은, +,- 정도의 연산만 하는 거라면 브루트 포스로 시도하자
+ */
+
 macro_rules! input {
     () => {};
     ($iter:ident, $id:ident = &str ) => { let $id = $iter.next().unwrap(); };
@@ -37,19 +42,30 @@ pub fn main() {
     // from here to end
     input!(words, t = u64);
     for _ in 0..t {
-        input!(words, a = String);
-        let mut ch = a.chars();
-        let mut len = a.len();
-        let mut zeros:usize = 0;
-        let mut ones:usize = 0;
+        input!(words, hc = i64, dc = i64);
+        input!(words, hm = i64, dm = i64);
+        input!(words, k = i64, w = i64, a = i64);
 
-        while let Some(b) = ch.next() {
-            if b == '0' {
-                zeros += 1;
-            } else {
-                ones += 1;
+        let mut is_win = false;
+        
+        for j in 0..k+1 {
+            let nhc = hc + j * a;
+            let ndc = dc + (k-j) * w;
+
+            // a/b -> (a + b -1) / b
+            // 이 기법은 나눗셈을 ceil하는 방법이다.
+            // 예시) 5/2 는 결과가 2로 나온다.
+            // 이를 (5+2-1)/2로 바꾸면 결과가 3으로 나온다.
+            if (hm + ndc - 1) / ndc <= (nhc + dm - 1)/dm {
+                is_win = true;
+                break;
             }
         }
-        println!("{}", min(min(ones, zeros), (len - 1) / 2))
+
+        if is_win {
+            println!("YES");
+        } else {
+            println!("NO");
+        }
     }
 }
