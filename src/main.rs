@@ -6,11 +6,6 @@ use std::io::{prelude::*, stdin, stdout, BufWriter};
 use std::os::raw::c_char;
 use std::cmp::min;
 
-/**
- * hm/dc <= hc/dm 이면 끗
- * 10억 번 정도의 연산은, +,- 정도의 연산만 하는 거라면 브루트 포스로 시도하자
- */
-
 macro_rules! input {
     () => {};
     ($iter:ident, $id:ident = &str ) => { let $id = $iter.next().unwrap(); };
@@ -40,32 +35,29 @@ pub fn main() {
     macro_rules! println { ($($tt:tt)*) => { writeln!(stdout, $($tt)*).unwrap() }; }
 
     // from here to end
-    input!(words, t = u64);
-    for _ in 0..t {
-        input!(words, hc = i64, dc = i64);
-        input!(words, hm = i64, dm = i64);
-        input!(words, k = i64, w = i64, a = i64);
+    input!(words, f = i32, s = usize, g = usize, u = i32, d = i32);
+    let mut dist = [-1; 1_000_001];
+    dist[s] = 0;
 
-        let mut is_win = false;
-        
-        for j in 0..k+1 {
-            let nhc = hc + j * a;
-            let ndc = dc + (k-j) * w;
-
-            // a/b -> (a + b -1) / b
-            // 이 기법은 나눗셈을 ceil하는 방법이다.
-            // 예시) 5/2 는 결과가 2로 나온다.
-            // 이를 (5+2-1)/2로 바꾸면 결과가 3으로 나온다.
-            if (hm + ndc - 1) / ndc <= (nhc + dm - 1)/dm {
-                is_win = true;
-                break;
-            }
+    let mut queue:VecDeque<(i32, i32)> = VecDeque::new();
+    queue.push_back((s as i32, dist[s]));
+    
+    while !queue.is_empty() {
+        let (curr, step) = queue.pop_front().unwrap();
+        if curr + u <= f && dist[(curr + u) as usize] == -1{
+            dist[(curr + u) as usize] = step + 1;
+            queue.push_back((curr + u, step + 1));
         }
 
-        if is_win {
-            println!("YES");
-        } else {
-            println!("NO");
+        if curr - d >= 1 && dist[(curr - d) as usize] == -1 {
+            dist[(curr - d) as usize] = step + 1;
+            queue.push_back((curr - d, step + 1));
         }
+    }
+
+    if dist[g] != -1 {
+        println!("{}", dist[g]);
+    } else {
+        println!("use the stairs");
     }
 }
